@@ -1,0 +1,562 @@
+set cut_paste_input [stack 0]
+version 15.1 v9
+Group {
+ inputs 0
+ name Iris1
+ onCreate "tn = nuke.thisNode()\n\ntn\['__size'].setFlag(0x0000000000000001)\ntn\['__size'].setRange(1,1000)\ntn\['__size'].setFlag(0x0000000000000002)\ntn\['__size'].setValue(100)\ntn\['__size'].setFlag(0x0000000000008000)\n\n\ntn\['__gain'].setFlag(0x0000000000000004)\n\ntn\['__size2'].setFlag(0x0000000000000001)\ntn\['__size2'].setRange(1,1000)\ntn\['__size2'].setFlag(0x0000000000000002)\ntn\['__size2'].setValue(21)\ntn\['__size2'].setFlag(0x0000000000008000)\n\n\ntn\['__gain2'].setFlag(0x0000000000000004)\n\n\nnuke.toNode('Flare1')\['position'].setFlag(0x0000000000008000)\n"
+ selected true
+ xpos -15315
+ ypos 2340
+ addUserKnob {20 User l Settings}
+ addUserKnob {26 _title l "" +STARTLINE T "<b><font size=3>Iris generator</font></b><font size=1> v0.3</font><br>\n<font size=1>procedural generation</font>"}
+ addUserKnob {26 ""}
+ addUserKnob {26 div1 l <b>Size</b>}
+ addUserKnob {3 max_size l size}
+ max_size 50
+ addUserKnob {7 center R 0 100}
+ center 70
+ addUserKnob {26 unit1 l "" -STARTLINE T " % "}
+ addUserKnob {7 ring R 0 100}
+ ring 20
+ addUserKnob {26 div2 l "" -STARTLINE T " % "}
+ addUserKnob {26 "" l "@b;Shape"}
+ addUserKnob {41 corners T Flare1.corners}
+ addUserKnob {41 flattening l "edge flattening" T Flare1.flattening}
+ addUserKnob {41 sharpness l "corner sharpness" T Flare1.sharpness}
+ addUserKnob {41 corners_angle l angle T Flare1.corners_angle}
+ addUserKnob {41 corner_angle_add l rel -STARTLINE T Flare1.corner_angle_add}
+ addUserKnob {20 "" n -2}
+ addUserKnob {20 Color}
+ addUserKnob {26 "" l "@b;Colors"}
+ addUserKnob {41 ring_color l "ring color" T Flare1.ring_color}
+ addUserKnob {41 inner_color l "inner color" T Flare1.inner_color}
+ addUserKnob {41 outer_falloff l "outer falloff" T Flare1.outer_falloff}
+ addUserKnob {41 inner_falloff l "inner falloff" T Flare1.inner_falloff}
+ addUserKnob {26 "" l "@b;Color Shifts"}
+ addUserKnob {41 chroma_spread l "chroma spread" T Flare1.chroma_spread}
+ addUserKnob {41 chroma_shift l "chroma shift" T Flare1.chroma_shift}
+ addUserKnob {41 chroma_shift_angle l angle T Flare1.chroma_shift_angle}
+ addUserKnob {41 chroma_shift_angle_add l rel -STARTLINE T Flare1.chroma_shift_angle_add}
+ addUserKnob {26 ""}
+ addUserKnob {41 saturation l "overall saturation" T HueShift1.saturation}
+ addUserKnob {41 hue_rotation l "hue rotation" T HueShift1.hue_rotation}
+ addUserKnob {20 Noise}
+ addUserKnob {26 div3 l <b>Noise</b>}
+ addUserKnob {12 __size l "x/y size" R 1 1000}
+ __size 100
+ addUserKnob {7 __opacity l opacity}
+ __opacity 0.4
+ addUserKnob {7 __z l z R 0 5}
+ addUserKnob {7 __gain l gain}
+ __gain 0.6
+ addUserKnob {7 __gamma l gamma}
+ __gamma 0.8
+ addUserKnob {41 mix T Merge5.mix}
+ addUserKnob {20 Stains}
+ addUserKnob {7 _opacity2 l opacity}
+ _opacity2 1
+ addUserKnob {12 __size2 l "x/y size" R 1 1000}
+ __size2 21
+ addUserKnob {7 __z2 l z R 0 5}
+ __z2 2.22
+ addUserKnob {7 __gain2 l gain R 0.1 1}
+ __gain2 0.64
+ addUserKnob {7 __gamma2 l gamma}
+ __gamma2 0.535
+ addUserKnob {26 ""}
+ addUserKnob {41 mix_3 l mix T Mergestains.mix}
+ addUserKnob {20 Spiral l Spiral/Circles}
+ addUserKnob {41 ___center l center T NoOp1.___center}
+ addUserKnob {26 div4 l Spiral}
+ addUserKnob {41 _var1 l branch T Expression2._var1}
+ addUserKnob {41 _var2 l angle T Expression2._var2}
+ addUserKnob {41 mix_1 l mix T Merge_Vortex.mix}
+ addUserKnob {26 Circles}
+ addUserKnob {41 size_2 l Size T controler.size}
+ addUserKnob {41 mix_2 l mix T Merge_Circles.mix}
+ addUserKnob {20 "" n -3}
+ addUserKnob {26 ""}
+ addUserKnob {26 _info l "" +STARTLINE T <i>oblanchet@wetafx.co.nz</i>}
+ addUserKnob {20 endGroup n -1}
+}
+ Reformat {
+  inputs 0
+  type "to box"
+  format "512 512 0 0 512 512 1 square_512"
+  box_width {{max_size%02?max_size:max_size-1}}
+  box_height {{box_width}}
+  box_fixed true
+  box_pixel_aspect {{"\[python nuke.root()\\\['format'\\].value().pixelAspect()]"}}
+  black_outside true
+  pbb true
+  name Reformat3
+  xpos 465
+  ypos -202
+ }
+ Flare {
+  position {{int(width/2)} {position.x}}
+  radius {{radius.2-(radius.2*center/100)} {radius.2-(radius.2*ring/100)} {width}}
+  size_mult 0.5
+  inner_color 0.65
+  outer_falloff 1.16
+  inner_falloff 4
+  chroma_spread -0.064
+  brightness 0.445
+  corners 8
+  flattening 0.2
+  sharpness 1
+  corners_angle 24
+  mult_offset 0
+  mult_size 0.62
+  name Flare1
+  xpos 575
+  ypos -202
+ }
+set N21b7db50 [stack 0]
+ Shuffle {
+  green red
+  blue red
+  alpha red
+  name Red
+  tile_color 0xff0000ff
+  label "\[value in]"
+  xpos 737
+  ypos -208
+ }
+ Grade {
+  channels rgba
+  whitepoint {0.2914749682 0.2914749682 0.2914749682 0.2914749682}
+  black_clamp false
+  unpremult -rgba.alpha
+  name Grade2
+  xpos 737
+  ypos -134
+ }
+ Dot {
+  name Dot5
+  xpos 771
+  ypos 23
+ }
+set N21bbc2b0 [stack 0]
+ Dot {
+  name Dot4
+  xpos 771
+  ypos 95
+ }
+set N21bc1d50 [stack 0]
+ Dot {
+  name Dot6
+  xpos 771
+  ypos 125
+ }
+ Reformat {
+  inputs 0
+  format "512 512 0 0 512 512 1 square_512"
+  pbb true
+  name Reformat1
+  xpos 40
+  ypos -226
+ }
+ Dot {
+  name Dot7
+  xpos 74
+  ypos -131
+ }
+set N21bde510 [stack 0]
+ Dot {
+  name Dot1
+  xpos -70
+  ypos -131
+ }
+set N21be3f10 [stack 0]
+ Noise {
+  opacity {{_opacity2}}
+  size {{__size2}}
+  zoffset {{__z2}}
+  gain {{__gain2}}
+  gamma {{__gamma2}}
+  center {1920 804}
+  name Stains0
+  xpos -331
+  ypos -135
+ }
+ Group {
+  name Threshold
+  tile_color 0x3f5b00
+  xpos -331
+  ypos -33
+  addUserKnob {20 User l Threshold}
+  addUserKnob {26 title l "" +STARTLINE T "<b><font size=3>Threshold</font></b><font size=1> v1.2</font>"}
+  addUserKnob {26 ""}
+  addUserKnob {26 type l "<b><font color=grey>type</font></b>"}
+  addUserKnob {4 choice l "" +STARTLINE M {threshold slice ""}}
+  addUserKnob {26 value l "<b><font color=grey>value</font></b>"}
+  addUserKnob {41 Threshold l threshold T Expression1.Threshold}
+  addUserKnob {41 dof l "range (slice)" T ZSlice1.dof}
+  addUserKnob {26 info l "" +STARTLINE T "\nThe threshold split RGB average in 2 values.\nSlice allow to select a range around the\nthreshold value.\n\nOlivier Blanchet v1.2"}
+ }
+  Input {
+   inputs 0
+   name mask
+   xpos 187
+   ypos 280
+   number 1
+  }
+  Input {
+   inputs 0
+   name Input1
+   xpos -69
+   ypos -95
+  }
+  Dot {
+   name Dot2
+   xpos -35
+   ypos -2
+  }
+set N21c19200 [stack 0]
+  Expression {
+   expr0 (r+g+b)/3>Threshold?1:0
+   expr1 (r+g+b)/3>Threshold?1:0
+   expr2 (r+g+b)/3>Threshold?1:0
+   name Expression1
+   xpos -69
+   ypos 29
+   addUserKnob {20 User}
+   addUserKnob {7 Threshold R 0 2}
+   Threshold 0.5
+  }
+push $N21c19200
+  Dot {
+   name Dot3
+   xpos -103
+   ypos 27
+  }
+  Copy {
+   inputs 2
+   from0 rgba.red
+   to0 rgba.alpha
+   name CopyMain
+   xpos -69
+   ypos 79
+  }
+  Premult {
+   name Premult1
+   xpos -69
+   ypos 113
+  }
+  Expression {
+   expr0 a
+   expr1 a
+   expr2 a
+   expr3 a
+   name Expression4
+   xpos -69
+   ypos 174
+  }
+push $N21c19200
+  Dot {
+   name Dot1
+   xpos 108
+   ypos -2
+  }
+  Expression {
+   expr3 (r+g+b)/3
+   name Expression2
+   xpos 74
+   ypos 31
+  }
+  ZSlice {
+   Zchan rgba.alpha
+   center {{parent.Expression1.Threshold}}
+   name ZSlice1
+   xpos 74
+   ypos 79
+  }
+  Expression {
+   expr3 (r+g+b)>0?1:0
+   name Expression3
+   xpos 74
+   ypos 113
+  }
+  Expression {
+   expr0 a
+   expr1 a
+   expr2 a
+   expr3 a
+   name Expression5
+   xpos 74
+   ypos 169
+  }
+  Switch {
+   inputs 2
+   which {{1-choice}}
+   name Switch1
+   xpos 0
+   ypos 229
+  }
+set N21ca33d0 [stack 0]
+  Expression {
+   expr0 00
+   expr1 0
+   expr2 0
+   expr3 0
+   name Expression6
+   xpos -59
+   ypos 260
+  }
+push $N21ca33d0
+  Keymix {
+   inputs 3
+   name KeymixMask
+   xpos 0
+   ypos 282
+  }
+  Output {
+   name Output1
+   xpos 0
+   ypos 330
+  }
+ end_group
+set N21c014f0 [stack 0]
+ Erode {
+  channels rgba
+  size -12
+  name Erode1
+  xpos -331
+  ypos 37
+ }
+set N21ccf150 [stack 0]
+ FilterErode {
+  size 2.5
+  name FilterErode2stains
+  xpos -238
+  ypos 58
+ }
+push $N21ccf150
+ Grade {
+  inputs 1+1
+  multiply 0
+  black_clamp false
+  unpremult -rgba.alpha
+  name Grade1
+  xpos -331
+  ypos 101
+ }
+ Blur {
+  channels rgba
+  size 8.5
+  mix 0.91
+  name Blur1
+  xpos -331
+  ypos 127
+ }
+ Reformat {
+  type "to box"
+  format "512 512 0 0 512 512 1 square_512"
+  box_width {{max_size}}
+  box_height {{box_width}}
+  box_fixed true
+  box_pixel_aspect {{"\[python nuke.root()\\\['format'\\].value().pixelAspect()]"}}
+  pbb true
+  name Reformat5
+  xpos -221
+  ypos 127
+ }
+push $N21bc1d50
+push $N21c014f0
+ Blur {
+  channels rgba
+  size 18.5
+  name Blur2
+  xpos -221
+  ypos -33
+ }
+set N21d201f0 [stack 0]
+push $N21be3f10
+ NoOp {
+  name NoOp1
+  xpos -104
+  ypos -113
+  addUserKnob {20 User}
+  addUserKnob {12 ___center l center}
+  ___center {325 202.5}
+ }
+ Expression {
+  channel0 rgba
+  expr0 "cos(atan2(x-_center.x, y-_center.y)*_var1 - log(sqrt(pow(x-_center.x, 2) + pow(y-_center.y, 2) *1))*_var2)"
+  name Expression2
+  xpos -104
+  ypos -89
+  addUserKnob {20 User}
+  addUserKnob {12 _center l center +INVISIBLE}
+  _center {{NoOp1.___center.x} {NoOp1.___center.y}}
+  addUserKnob {12 _offset +INVISIBLE}
+  addUserKnob {7 _var1 R 0 10}
+  _var1 3
+  addUserKnob {7 _var2 R 0 360}
+  _var2 14
+ }
+ TransformMasked {
+  inputs 1+1
+  scale 1.1
+  center {256 256}
+  shutteroffset centred
+  name Transform1
+  xpos -104
+  ypos -39
+ }
+ Dot {
+  name Dot2
+  xpos -70
+  ypos 95
+ }
+ Reformat {
+  type "to box"
+  format "512 512 0 0 512 512 1 square_512"
+  box_width {{parent.Reformat3.box_width}}
+  box_height {{box_width}}
+  box_fixed true
+  box_pixel_aspect {{"\[python nuke.root()\\\['format'\\].value().pixelAspect()]"}}
+  pbb true
+  name Reformat2
+  xpos 415
+  ypos 91
+ }
+push $N21bbc2b0
+push $N21d201f0
+push $N21bde510
+ NoOp {
+  name controler
+  xpos 40
+  ypos -103
+  addUserKnob {20 User l Settings}
+  addUserKnob {12 center l Center +INVISIBLE}
+  center {{NoOp1.___center.x} {NoOp1.___center.y}}
+  addUserKnob {7 evolution l "Evolution speed" R -10 10}
+  addUserKnob {7 size l Size R 0 500}
+  size 68
+ }
+ Expression {
+  expr0 "sin((sqrt(((((x-controler.center.x) * (x-controler.center.x) + (y-controler.center.y) * (y-controler.center.y) ) /controler.size))))+controler.evolution*frame/(2*pi))"
+  expr1 "sin((sqrt(((((x-controler.center.x) * (x-controler.center.x) + (y-controler.center.y) * (y-controler.center.y) ) /controler.size))))+controler.evolution*frame/(2*pi))"
+  expr2 "sin((sqrt(((((x-controler.center.x) * (x-controler.center.x) + (y-controler.center.y) * (y-controler.center.y) ) /controler.size))))+controler.evolution*frame/(2*pi))"
+  expr3 "sin((sqrt(((((x-controler.center.x) * (x-controler.center.x) + (y-controler.center.y) * (y-controler.center.y) ) /controler.size))))+controler.evolution*frame/(2*pi))"
+  name Expression12
+  xpos 40
+  ypos -77
+ }
+ TransformMasked {
+  inputs 1+1
+  scale 1.1
+  center {256 256}
+  shutteroffset centred
+  name Transform2
+  xpos 40
+  ypos -39
+ }
+ Dot {
+  name Dot3
+  xpos 74
+  ypos 23
+ }
+ Reformat {
+  type "to box"
+  format "512 512 0 0 512 512 1 square_512"
+  box_width {{parent.Reformat3.box_width}}
+  box_height {{box_width}}
+  box_fixed true
+  box_pixel_aspect {{"\[python nuke.root()\\\['format'\\].value().pixelAspect()]"}}
+  pbb true
+  name Reformat7
+  xpos 413
+  ypos 19
+ }
+push $N21bde510
+ Noise {
+  opacity {{__opacity}}
+  size {{__size}}
+  zoffset {{__z}}
+  gain {{__gain}}
+  gamma {{__gamma}}
+  center {1920 804}
+  name Noise_main
+  xpos 181
+  ypos -117
+ }
+ FilterErode {
+  channels rgb
+  size 10
+  filter triangle
+  name FilterErode1
+  xpos 327
+  ypos -117
+ }
+ Reformat {
+  type "to box"
+  format "512 512 0 0 512 512 1 square_512"
+  box_width {{parent.Reformat3.box_width}}
+  box_height {{box_width}}
+  box_fixed true
+  pbb true
+  name Reformat6
+  xpos 437
+  ypos -117
+ }
+push $N21b7db50
+ Merge2 {
+  inputs 2
+  operation multiply
+  metainput All
+  maskChannelInput -rgba.red
+  mix 0.63
+  name Merge5
+  xpos 575
+  ypos -117
+ }
+ Merge2 {
+  inputs 2+1
+  operation screen
+  metainput All
+  maskChannelInput -rgba.red
+  mix 0.06
+  name Merge_Circles
+  xpos 575
+  ypos 19
+ }
+ Merge2 {
+  inputs 2+1
+  operation screen
+  metainput All
+  maskChannelInput -rgba.red
+  mix 0.055
+  name Merge_Vortex
+  xpos 575
+  ypos 91
+ }
+ Merge2 {
+  inputs 2+1
+  metainput All
+  maskChannelInput -rgba.red
+  mix 0.2
+  name Mergestains
+  xpos 575
+  ypos 121
+ }
+ Expression {
+  expr3 min((r+b)/2,g)
+  name Expression1
+  xpos 575
+  ypos 159
+ }
+ HueShift {
+  unpremult -rgba.alpha
+  name HueShift1
+  xpos 575
+  ypos 197
+ }
+ Output {
+  name Output1
+  xpos 575
+  ypos 243
+ }
+end_group

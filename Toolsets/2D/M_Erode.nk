@@ -1,0 +1,114 @@
+set cut_paste_input [stack 0]
+version 15.1 v6
+push $cut_paste_input
+Group {
+ name M_Erode
+ selected true
+ xpos -2189
+ ypos -6372
+ addUserKnob {20 User}
+ addUserKnob {41 screenGrowShrink l "Screen Dilate" T Keylight2.screenGrowShrink}
+ addUserKnob {41 screenSoftness l "Screen Softness" T Keylight2.screenSoftness}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 713
+  ypos -630
+ }
+set Nb409ed80 [stack 0]
+ Shuffle {
+  red alpha
+  green alpha
+  blue alpha
+  name ShuffleAlpha
+  xpos 587
+  ypos -566
+ }
+set N1c10f960 [stack 0]
+push $N1c10f960
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 black -1 -1 rgba.red 0 0 black -1 -1 rgba.green 0 1 white -1 -1 rgba.blue 0 2 black -1 -1 rgba.alpha 0 3"
+  name Shuffle1
+  xpos 454
+  ypos -557
+ }
+ Merge2 {
+  inputs 2
+  name Merge37
+  xpos 585
+  ypos -517
+ }
+ OFXuk.co.thefoundry.keylight.keylight_v201 {
+  show "Final Result"
+  unPreMultiply false
+  screenColour {0 0 1}
+  screenGain 1
+  screenBalance 0.95
+  alphaBias {0.5 0.5 0.5}
+  despillBias {0.5 0.5 0.5}
+  gangBiases true
+  preBlur 0
+  "Screen Matte" 1
+  screenClipMin 0
+  screenClipMax 1
+  screenClipRollback 0
+  screenGrowShrink 14
+  screenSoftness 0
+  screenDespotBlack 0
+  screenDespotWhite 0
+  screenReplaceMethod "Soft Colour"
+  screenReplaceColour {0.5 0.5 0.5}
+  Tuning 0
+  midPoint 0.5
+  lowGain 1
+  midGain 1
+  highGain 1
+  "Inside Mask" 0
+  sourceAlphaHandling Ignore
+  insideReplaceMethod "Soft Colour"
+  insideReplaceColour {0.5 0.5 0.5}
+  Crops 0
+  SourceXMethod Colour
+  SourceYMethod Colour
+  SourceEdgeColour 0
+  SourceCropL 0
+  SourceCropR 1
+  SourceCropB 0
+  SourceCropT 1
+  balanceSet false
+  insideComponent None
+  outsideComponent None
+  cacheBreaker true
+  name Keylight2
+  xpos 585
+  ypos -465
+ }
+set N55b5c430 [stack 0]
+push $Nb409ed80
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  xpos 723
+  ypos -443
+ }
+ Output {
+  name Output1
+  xpos 731
+  ypos -367
+ }
+push $N55b5c430
+ Viewer {
+  frame_range 1001-1060
+  fps 25
+  viewerProcess "Client Grade (Rec709)"
+  monitorOutNDISenderName "NukeX - 0170-0010_2dmockup-comp_v003 - Viewer1"
+  name Viewer1
+  xpos 431
+  ypos -430
+ }
+end_group
